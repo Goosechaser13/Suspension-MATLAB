@@ -17,7 +17,7 @@ MArmU = [12 ; 7.67 ; -0]; % upper arm to chassis
 MArmL_End = MPush; % Where knuckle connects to lower arm
 MArmU_End = [21.72 ; 6.62 ; -0]; %Where knuckle connects to upper arm
 
-
+minWheelTravel = 1.9685; %minimum travel in inches set by rules
 v_knuckle = (MArmU_End-MArmL_End)/norm(MArmU_End-MArmL_End)
 MWheel = v_knuckle*(0.97) + MArmL_End
 
@@ -53,11 +53,17 @@ wheelHeight = wheelHeight - MWheel(2);
 deltaX = diff(x);
 deltaWheel = diff(wheelHeight);
 MR = gradient(x,wheelHeight);
-
+ 
 figure(1);
 subplot(1,2,1);
 plot(wheelHeight,x)
 title("Motion Ratio");
+
+if( (max(wheelHeight) - min(wheelHeight)) < minWheelTravel )
+    text(0.5,0.5,0,'BELOW MIN WHEEL TRAVEL','Units','normalized',...
+        'HorizontalAlignment','center','VerticalAlignment','middle' ...
+        ,Color=[1,0,0],FontWeight='bold') %% If wheel doesn't travel enough, warn
+end
 xlabel('Wheel Distance from rest'); ylabel('Damper Extension');
 
 subplot(1,2,2)
