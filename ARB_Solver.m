@@ -1,11 +1,13 @@
 
-w_axle = 580 %lbs
+W = 580 % car weight in lbs
+
+
+FR_distribution = .45 %distribution of front/total weight
+
+WF = 580 * FR_distribution; %weight on front
+WR = W - WF; % weight on rear
+
+
 kSpring = 150 %lbs / in
 MR = 1 %motion ratio
 g = 386.4 % gravity in inch/s^2
-
-m_axle = w_axle / g %turn weight to mass 
-kWheel = kSpring * (MR)^2
-
-rideFreq = sqrt(kSpring/m) %rads/s
-Kw = (k)
