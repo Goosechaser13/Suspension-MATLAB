@@ -7,11 +7,13 @@ data = readtable("CarData.xlsx",VariableNamingRule="preserve");
 RG = 0.5 % deg/g , Desired Roll Gradient
 
 W = data{1,4}; % car weight in lbs
-WUC = data{2,4}; %lbs of unsprung corner weight
+W_distribution = data{1,5};
+WUC = data{2,4}; %unsprung weight
+
 
 %extract data
 WF = data{1,2}; WR = data{1,3}; %weight on front/rear
-WUF = WUC*2; WUR = WUC*2; %unsprung weight
+WUF = WUC*W_distribution; WUR = WUC*(1-W_distribution); %unsprung weight
 WSF = WF-WUF; WSR = WR-WUR; WS = WSF+WSR; %sprung weight
 
 
@@ -55,5 +57,5 @@ KSF = (KRF * trackF^2) / (4320/pi); %units: lb*ft/deg
 KSR = (KRR * trackR^2) / (4320/pi); %units: lb*ft/deg
 KS = KSF + KSR; % roll rate available from springs
 
-% ROLL RATE REQUIRED from ARB:
-KARB = KRollReq - (KSF+KSR)
+% ROLL RATE REQUIRED from ARBs:
+KARB = KRollReq - (KS) % lb*ft/deg
