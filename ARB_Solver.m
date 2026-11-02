@@ -4,7 +4,7 @@ data = readtable("CarData.xlsx",VariableNamingRule="preserve");
 
 %% Sort Data
 
-RG = 0.5 % deg/g , Desired Roll Gradient
+RG = 1.5 % deg/g , Desired Roll Gradient
 
 W = data{1,4}; % car weight in lbs
 W_distribution = data{1,5};
@@ -16,9 +16,11 @@ WF = data{1,2}; WR = data{1,3}; %weight on front/rear
 WUF = WUC*W_distribution; WUR = WUC*(1-W_distribution); %unsprung weight
 WSF = WF-WUF; WSR = WR-WUR; WS = WSF+WSR; %sprung weight
 
+FLTD = data{14,2}; %Front Load Transfer distribution
+RLTD = data{14,3}; %Rear Load Transfer distribution
 
 wheelBase = data{6,4};
-trackF = data{7,2}; trackR = data{7,3}; %track width
+trackF = data{7,2}; trackR = data{7,3}; %track width in.
 
 kSpring = data{8,4}; %lbs / in
 MRF = data{5,2}; MRR = data{5,3}; % motion ratios
@@ -39,9 +41,11 @@ g_in = 386.4; % gravity in inch/s^2
 F_freq = ( 1/ (2*pi)) * sqrt( (KRF * g_in) / (WSF/2) ); % front ride freq, not needed
 R_freq = ( 1/ (2*pi)) * sqrt( (KRR * g_in) / (WSR/2) ); % rear ride freq
 
-Sprung_distribution = WSF / (WS); % sprung mass weight distribution
+
 % calc sprung mass CG height
 hs = ( W*CG_height - WUF*SLR - WUR*SLR ) / (WS);
+
+Sprung_distribution = WSF / (WS); % sprung mass weight distribution
 
 % rolling moment lever arm, the distance from sprung CG and roll axis
 hRM = hs - (ZF + (ZR - ZF)*(1-Sprung_distribution));
@@ -58,4 +62,20 @@ KSR = (KRR * trackR^2) / (4320/pi); %units: lb*ft/deg
 KS = KSF + KSR; % roll rate available from springs
 
 % ROLL RATE REQUIRED from ARBs:
-KARB = KRollReq - (KS) % lb*ft/deg
+KARB = KRollReq - (KS); % lb*ft/deg
+
+
+totalLoadTrans = W*CG_height / ((trackF+trackR) /2 ); % per lateral g
+FLT = totalLoadTrans*FLTD; %lb/g
+RLT = totalLoadTrans*RLTD; %lb/g
+
+%Calculate roll stiffness from pg 604
+KF = (FLT - (WSF*ZF/trackF) - (WUF*SLR/trackF) ) / (12*RG/trackF ); %lb*ft/deg
+KR = KRollReq - KF; %lb*ft/deg rear stiffness
+
+KARBF = KF - KSF;
+KARBR = KRollReq - KF - KSR;
+
+fprintf("Assuming LLTD: F: %.1f%% R: %.1f%% , Roll gradient: %.2f [deg/g] \n",FLTD*100,RLTD*100,RG)
+fprintf("Front Roll stiffness = %.3f [lb*ft/deg] \n",KARBF);
+fprintf("Rear Roll stiffness = %.3f [lb*ft/deg] \n",KARBR);
