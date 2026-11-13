@@ -1,6 +1,6 @@
 clc; clear;
 
-data = readtable("CarData.xlsx",VariableNamingRule="preserve");
+data = readtable("CarData.xlsx",'Sheet','Roll Stiffness',VariableNamingRule="preserve");
 
 %extract data
 W = data{1,4}; % car weight in lbs
@@ -36,6 +36,8 @@ cachedData = {W,W_distribution,WUC,WF,WR,WUF,WUR,WSF,WSR,WS,FLTD,RLTD,wheelBase,
     MRF,KRF,KRR,ZF,ZR,TireRate,TireRadius,SLRF,SLRR,CG_height,g,g_in};
 
 %% Calculating Bar stiffness
+
+%{
 function [KF_bar,KR_bar] = RollToBarK(RG,IF,IR,LF,LR,cachedData)
     trackF = cachedData{14}; trackR = cachedData{15};
     [KARBF,KARBR] = RollCalculator(RG,cachedData);
@@ -51,6 +53,16 @@ RG = 1.6;
 fprintf("Assuming LLTD: F: %.1f%% R: %.1f%% , Roll gradient: %.2f [deg/g] \n",FLTD*100,RLTD*100,RG)
 fprintf("Front Bar stiffness = %.3f [lb*ft/deg] \n",KF_bar);
 fprintf("Rear Bar stiffness = %.3f [lb*ft/deg] \n",KR_bar);
+%}
+
+
+
+%% Find specific values
+RG = 0.5;
+[KARBF,KARBR] = RollCalculator(RG,cachedData);
+fprintf("Assuming LLTD: F: %.1f%% R: %.1f%% , Roll gradient: %.2f [deg/g] \n",FLTD*100,RLTD*100,RG)
+fprintf("Front stiffness = %.3f [lb*ft/deg] \n",KARBF);
+fprintf("Rear stiffness = %.3f [lb*ft/deg] \n",KARBR);
 
 
 %% Plot Data
@@ -73,7 +85,11 @@ xlabel('Roll Gradient [deg/g]');
 ylabel('Stiffness [lb*ft/deg]');
 theme(gcf,'light'); 
 hold off
-function [KARB,KARBR] = RollCalculator(RG,cachedData)
+
+
+
+function [KARBF,KARBR] = RollCalculator(RG,cachedData)
+
     %% Calculations (pg 603 in millitch)
     [W,W_distribution,WUC,WF,WR,WUF,WUR,WSF,WSR,WS,FLTD,RLTD,wheelBase,trackF,trackR,kSpring...
         MRF,KRF,KRR,ZF,ZR,TireRate,TireRadius,SLRF,SLRR,CG_height,g,g_in] = deal(cachedData{:});
