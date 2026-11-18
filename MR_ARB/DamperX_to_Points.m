@@ -33,7 +33,33 @@ L_ArmU    = norm(points(:,9) - points(:,7));
 
 % wheel location
 v_knuckle = (newPoints(:,9)-newPoints(:,8) ) / norm(newPoints(:,9)-newPoints(:,8) );
-newPoints(:,10) = v_knuckle*(0.97) + newPoints(:,8);
+newPoints(:,10) = v_knuckle*(3.2) + newPoints(:,8);
+
+% Find ARB rotation
+L_DropLink = norm( points(:,13)-points(:,11) );
+v_ARB = points(:,13)-points(:,12);
+v_Drop = newPoints(:,11)-points(:,12);
+
+a = v_ARB(2)*v_Drop(2) + v_ARB(3)*v_Drop(3);
+b = v_ARB(2)*v_Drop(3) - v_ARB(3)*v_Drop(2);
+c = (norm(v_ARB)^2 + norm(v_Drop)^2 - L_DropLink^2) /2 - v_ARB(1)*v_Drop(1);
+
+%check if solution is reachable
+R = hypot(a,b);
+if abs(c) > R
+    error('Target distance is unreachable by rotating around the x-axis')
+end
+
+%calculate the two exact angles
+phi = atan2(b,a);
+alpha = acos(c/R);
+theta_1 = wrapToPi(phi + alpha);
+theta_2 = wrapToPi(phi - alpha);
+Rx = @(th) [1, 0, 0; 0, cos(th), -sin(th); 0, sin(th), cos(th)];
+E1 = points(:,12) + (Rx(theta_1) * v_ARB);
+E2 = points(:,12) + (Rx(theta_2) * v_ARB);
+newPoints(:,13) = E2;
+
 end
 
 function [px,py] = pickNearest(xo,yo,x0,y0)
