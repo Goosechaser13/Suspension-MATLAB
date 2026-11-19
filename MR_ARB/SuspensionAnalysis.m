@@ -5,15 +5,15 @@
 %% IGNORE Z, GET HORI,VERT DISTANCE FROM A REFERENCE POINT
 % in X ; Y ; Z format
 MSpring = [-9.359109; 15.858556 ;0]; % Spring mount to chassis X Y Z in.
-MBell = [-9.3;7.605988;0]; %Bellcrank pivot point
-MPush = [-21.72;4.21;0]; % Where pusharm attaches to lower arm
+MBell = [-9.3;7;0]; %Bellcrank pivot point
+MPush = [-18.89;3;0]; % Where pusharm attaches to lower arm
 
-MBellSpr = [-12.704428; 11.010416 ;0]; %Point where bellcrank connects to spring
-MBellPush = [-13.93532; 9.434057 ;0]; % bellcrank connects to rod
-MBellARB = [ -12.602757 ; 8.734314 ; 0];
+MBellSpr = [-12.403644; 10.67471 ;0]; %Point where bellcrank connects to spring
+MBellPush = [-13.763625; 9.208269 ;0]; % bellcrank connects to rod
+MBellARB = [ -11.833428 ; 8.25485 ; 0];
 
-MArmL = [-7.98395 ; 3 ; 6.35]; % Where lower arm connects to chassis
-MArmU = [-9.633238 ; 7.305803 ; 6.35]; % upper arm to chassis
+MArmL = [-7.98395 ; 3 ; 6.93]; % Where lower arm connects to chassis
+MArmU = [-9.633238 ; 7.305803 ; 6.93]; % upper arm to chassis
 
 MArmL_End = [-20.567206; 3.142493; 0]; % Where knuckle connects to lower arm
 MArmU_End = [-21.776179 ; 10.6 ; -0]; %Where knuckle connects to upper arm
@@ -22,13 +22,17 @@ minWheelTravel = 1.9685; %minimum travel in inches set by rules
 v_knuckle = (MArmU_End-MArmL_End)/norm(MArmU_End-MArmL_End);
 MWheel = v_knuckle*(3.12) + MArmL_End;
 
-MARB = [-10.6 ; 3.8 ; 4.54];
-L_ARB = 4.53;
-MARB_End = [-10.6 ; 3.8 ; MARB(3) - L_ARB];
+MARB = [-10.6 ; 4 ; 4];
+L_ARB = 3;
+MARB_End = [-10.6 ; 5.02 ; MARB(3)-L_ARB];
 
-MBellARB = [-13.239231 ; 6.911395 ; 0.000000];
-MARB     = [-12.276606 ; 3.800000 ; 4.540000];
-MARB_End = [-12.276606 ; 2.019262 ; 0.374682];
+MBellARB = [-13.201524 ; 7.998113 ; 0.000000];
+MARB     = [-13 ; 3.800000 ; 4.200000];
+MARB_End = [-13 ; 4.153289 ; 1.051097];
+
+v_arm = (MARB_End - MARB) / norm(MARB_End - MARB);
+L2 = 4;
+%MARB_End = (v_arm * L2) +MARB
 %% 
 points = [MSpring,MBell,MPush,MBellPush,MBellSpr, ... 
     MArmL, MArmU, MArmL_End , MArmU_End,MWheel,MBellARB,MARB,MARB_End];
@@ -45,7 +49,9 @@ x_rest = 7; %rest length for damper
 x_min = 5.94;
 x_max = 8.19;
 %% Analysis
-
+fprintf("DropLink: %.4f \n",norm(points(:,11)-points(:,13)))
+fprintf("Bar Length: %.4f \n",MARB(1)*-2)
+fprintf("Arm Length: %.4f \n",norm(points(:,12)-points(:,13)))
 %Create motion ratio graph
 %  This is done by change damper size and evaluating ratio of the wheel change
 % MR = deltaSpring / deltaWheel
@@ -86,6 +92,7 @@ title("Instantaneous Motion Ratio");
 ytickformat('%.2f');
 xlabel('Wheel Height distance from rest'); ylabel('Motion Ratio');
 
+%visualizeSuspension(totalPoints(:,:,7));
 visualizeSuspension(points());
 
 % PLOT ARB MR

@@ -15,14 +15,19 @@ newPoints(:,4) = points(:,2) + rotz(dAngle)*(points(:,4) - points(:,2));
 newPoints(:,11) = points(:,2) + rotz(dAngle)*(points(:,11) - points(:,2));
 
 % Pushrod / lower arm end
-L_ArmL    = norm(points(:,3) - points(:,6));
+L_ArmL    = norm(points(1:2,3) - points(1:2,6));
 L_pushrod = norm(points(:,3) - points(:,4));
 [xo,yo] = circcirc(newPoints(1,4),newPoints(2,4),L_pushrod, ...
     points(1,6),points(2,6),L_ArmL);
 [newPoints(1,3), newPoints(2,3)] = pickNearest(xo,yo,points(1,3),points(2,3));
 
-% Lower arm end follows the pushrod mount (same point for now)
-newPoints(:,8) = newPoints(:,3);
+% Lower arm end
+v_old = points(1:2,3) - points(1:2,6);
+v_new = newPoints(1:2,3) - points(1:2,6);
+dAngle = atan2d(v_new(2),v_new(1)) - atan2d(v_old(2),v_old(1));
+dAngle = atan2d(sind(dAngle), cosd(dAngle));
+newPoints(:,8) = points(:,6) + rotz(dAngle)*(points(:,8) - points(:,6));
+
 
 % Upper arm end
 L_knuckle = norm(points(:,9) - points(:,8));

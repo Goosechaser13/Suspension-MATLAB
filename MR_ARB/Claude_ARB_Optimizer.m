@@ -17,12 +17,12 @@ objective = 'minmax';    % 'minmax' = minimize the WORST |MR - target| (shrinks 
                          % 'rms'    = minimize RMS error
 
 % What the optimizer may change (true = free)
-vary.MARB_z    = false;   % ARB pivot position along Z
+vary.MARB_z    = true;   % ARB pivot position along Z
 vary.L_ARB     = true;   % ARB arm length
 vary.L_Drop    = true;   % droplink length (arm REST ANGLE floats to suit)
 vary.BellARB_r = true;   % droplink attach point on bellcrank: radius from bellcrank pivot
 vary.BellARB_a = true;   % droplink attach point on bellcrank: angle about bellcrank pivot
-vary.MARB_y    = false;   % ARB pivot height
+vary.MARB_y    = true;   % ARB pivot height
 vary.MARB_x    = true;  % ARB pivot position along X
 
 % true -> arm is horizontal at rest, droplink length is derived (L_Drop ignored)
@@ -34,26 +34,26 @@ lockArmHorizontal = false;
 % eta = 1 only when the droplink is perpendicular to the arm AND lies in the
 % arm's plane (no X-direction component). The rest loads the bar/bearings
 % sideways or along the arm instead of twisting it.
-twistWeight = 0;     % 0 = off. >0 adds twistWeight*(1 - eta) at every sweep point
+twistWeight = 1;     % 0 = off. >0 adds twistWeight*(1 - eta) at every sweep point
 minTwistEff = 0.6;     % 0 = off. e.g. 0.95 penalizes any sweep point with eta < 0.95
 
 names = {'MARB_z','L_ARB','L_Drop','BellARB_r','BellARB_a','MARB_y','MARB_x'};
 % Bounds (inches; BellARB_a in degrees) -- PLACEHOLDERS, set to your packaging limits
 %       PivotPos, L_ARB, L_Drop, BellARB_r, BellARB angle, pivot h,pivot pos
-lb = [  2.0, 4, 3.5, 1.5, 110, 2.5, -12.5];
-ub = [  8.0, 7.0, 4, 4, 180, 5.5,  -8.5];
+lb = [  4.2, 3, 3.5, 1.5, 110, 3.85, -11.5];
+ub = [  6.0, 7.0, 5, 4, 185, 4,  -8.5];
 
 nStarts = 20;            % random restarts (start #1 = current design). Lower for a quick test.
 n       = 25;            % sweep points (finer = more accurate MR; slower)
 
 %% ===== GEOMETRY (keep identical to SuspensionAnalysis.m) =====
 MSpring = [-9.359109; 15.858556 ;0]; % Spring mount to chassis X Y Z in.
-MBell = [-9.3;7.605988;0]; %Bellcrank pivot point
+MBell = [-9.3;7;0]; %Bellcrank pivot point
 MPush = [-21.72;4.21;0]; % Where pusharm attaches to lower arm
 
-MBellSpr = [-12.704428; 11.010416 ;0]; %Point where bellcrank connects to spring
-MBellPush = [-13.93532; 9.434057 ;0]; % bellcrank connects to rod
-MBellARB = [ -12.602757 ; 8.734314 ; 0];
+MBellSpr = [-12.403644; 10.67471 ;0]; %Point where bellcrank connects to spring
+MBellPush = [-13.763625; 9.208269 ;0]; % bellcrank connects to rod
+MBellARB = [ -12.45 ; 8.56 ; 0];
 
 MArmL = [-7.98395 ; 3 ; 6.35]; % Where lower arm connects to chassis
 MArmU = [-9.633238 ; 7.305803 ; 6.35]; % upper arm to chassis
@@ -65,9 +65,9 @@ minWheelTravel = 1.9685; %minimum travel in inches set by rules
 v_knuckle = (MArmU_End-MArmL_End)/norm(MArmU_End-MArmL_End);
 MWheel = v_knuckle*(3.12) + MArmL_End;
 
-MARB = [-10.6 ; 3.8 ; 4.54];
+MARB = [-10.6 ; 3.8 ; 4.32];
 L_ARB = 4.53;
-MARB_End = [-10.6 ; 3.8 ; MARB(3) - L_ARB];
+MARB_End = [-10.6 ; 5.02 ; .03];
 
 points = [MSpring,MBell,MPush,MBellPush,MBellSpr, ...
     MArmL, MArmU, MArmL_End , MArmU_End,MWheel,MBellARB,MARB,MARB_End];
