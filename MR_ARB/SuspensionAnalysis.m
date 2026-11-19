@@ -27,11 +27,14 @@ L_ARB = 3;
 MARB_End = [-10.6 ; 5.02 ; MARB(3)-L_ARB];
 
 MBellARB = [-13.201524 ; 7.998113 ; 0.000000];
-MARB     = [-13 ; 3.800000 ; 4.200000];
-MARB_End = [-13 ; 4.153289 ; 1.051097];
+MARB     = [-12 ; 2.17 ; 2.9];
+MARB_End = [-12 ; 2.23 ; .1];
 
-v_arm = (MARB_End - MARB) / norm(MARB_End - MARB);
-L2 = 4;
+v_arm =  (MARB_End - MARB) / norm(MARB_End - MARB);
+L2 = 3;
+v_arbbell =(MBellARB - MBell) / norm(MBellARB - MBell);
+r = 4;
+%MBellARB = (v_arbbell * r) + MBell
 %MARB_End = (v_arm * L2) +MARB
 %% 
 points = [MSpring,MBell,MPush,MBellPush,MBellSpr, ... 
