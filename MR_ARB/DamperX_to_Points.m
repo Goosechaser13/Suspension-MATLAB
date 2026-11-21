@@ -38,7 +38,7 @@ L_ArmU    = norm(points(:,9) - points(:,7));
 
 % wheel location
 v_knuckle = (newPoints(:,9)-newPoints(:,8) ) / norm(newPoints(:,9)-newPoints(:,8) );
-newPoints(:,10) = v_knuckle*(3.2) + newPoints(:,8);
+newPoints(:,10) = v_knuckle*(3.26) + newPoints(:,8);
 
 % Find ARB rotation
 L_DropLink = norm( points(:,13)-points(:,11) );

@@ -4,36 +4,36 @@
 % Must be Coplanar suspension
 %% IGNORE Z, GET HORI,VERT DISTANCE FROM A REFERENCE POINT
 % in X ; Y ; Z format
-MSpring = [-9.359109; 15.858556 ;0]; % Spring mount to chassis X Y Z in.
-MBell = [-9.3;7;0]; %Bellcrank pivot point
-MPush = [-18.89;3;0]; % Where pusharm attaches to lower arm
+MSpring = [-8.74; 15.858556 ;0]; % Spring mount to chassis X Y Z in.
+MBell = [-9.3;7.29;0]; %Bellcrank pivot point
+MPush = [-18.67;3.84;0]; % Where pusharm attaches to lower arm
 
-MBellSpr = [-12.403644; 10.67471 ;0]; %Point where bellcrank connects to spring
-MBellPush = [-13.763625; 9.208269 ;0]; % bellcrank connects to rod
-MBellARB = [ -11.833428 ; 8.25485 ; 0];
+MBellSpr = [-12.82; 10.57 ;0]; %Point where bellcrank connects to spring
+MBellPush = [-13.99; 8.96 ;0]; % bellcrank connects to rod
+MBellARB = [ -13.29 ; 7.82 ; 0];
 
-MArmL = [-7.98395 ; 3 ; 6.93]; % Where lower arm connects to chassis
-MArmU = [-9.633238 ; 7.305803 ; 6.93]; % upper arm to chassis
+MArmL = [-7.96;3.01;5.6]; % Where lower arm connects to chassis
+MArmU = [-9.61;7.3;5.6]; % upper arm to chassis
 
-MArmL_End = [-20.567206; 3.142493; 0]; % Where knuckle connects to lower arm
-MArmU_End = [-21.776179 ; 10.6 ; -0]; %Where knuckle connects to upper arm
+MArmL_End = [-20.73;4.04;0]; % Where knuckle connects to lower arm
+MArmU_End = [-19.73;11.58;0]; %Where knuckle connects to upper arm
 
 minWheelTravel = 1.9685; %minimum travel in inches set by rules
 v_knuckle = (MArmU_End-MArmL_End)/norm(MArmU_End-MArmL_End);
-MWheel = v_knuckle*(3.12) + MArmL_End;
+MWheel = v_knuckle*(3.26) + MArmL_End;
 
-MARB = [-10.6 ; 4 ; 4];
-L_ARB = 3;
-MARB_End = [-10.6 ; 5.02 ; MARB(3)-L_ARB];
+MARB = [-12.350000 ; 2.1 ; 2.800000];
+L_ARB = 2.4;
+MARB_End = [-12.350000 ; 2.1 ; MARB(3)-L_ARB];
 
-MBellARB = [-13.201524 ; 7.998113 ; 0.000000];
-MARB     = [-12 ; 2.17 ; 2.9];
-MARB_End = [-12 ; 2.23 ; .1];
+
+%MARB     = [-13 ; 3.8 ; 4.2]; %design1
+%MARB_End = [-13 ; 4.13 ; 1.22]; %design1
 
 v_arm =  (MARB_End - MARB) / norm(MARB_End - MARB);
-L2 = 3;
+L2 = 3.23;
 v_arbbell =(MBellARB - MBell) / norm(MBellARB - MBell);
-r = 4;
+r = 4.0272;
 %MBellARB = (v_arbbell * r) + MBell
 %MARB_End = (v_arm * L2) +MARB
 %% 

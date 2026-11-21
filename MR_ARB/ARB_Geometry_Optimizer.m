@@ -1,3 +1,4 @@
+%% 
 %% ARB_Geometry_Optimizer.m
 % Tunes the ARB geometry so that
 %   1) ARB motion ratio is as constant as possible over the damper sweep
@@ -21,28 +22,27 @@
 clear; clc; close all;
 
 %% ---------------- Linkage (copy of SuspensionAnalysis.m, keep in sync) ---------MSpring = [-9.359109; 15.858556 ;0]; % Spring mount to chassis X Y Z in.
-MSpring = [-9.359109; 15.858556 ;0]; % Spring mount to chassis X Y Z in.
-MBell = [-9.3;7;0]; %Bellcrank pivot point
-MPush = [-18.89;3;0]; % Where pusharm attaches to lower arm
+MSpring = [-8.74; 15.858556 ;0]; % Spring mount to chassis X Y Z in.
+MBell = [-9.3;7.29;0]; %Bellcrank pivot point
+MPush = [-18.67;3.84;0]; % Where pusharm attaches to lower arm
 
-MBellSpr = [-12.403644; 10.67471 ;0]; %Point where bellcrank connects to spring
-MBellPush = [-13.763625; 9.208269 ;0]; % bellcrank connects to rod
-MBellARB = [ -11.833428 ; 8.25485 ; 0];
+MBellSpr = [-12.82; 10.57 ;0]; %Point where bellcrank connects to spring
+MBellPush = [-13.99; 8.96 ;0]; % bellcrank connects to rod
+MBellARB = [ -13.29 ; 7.82 ; 0];
 
-MArmL = [-7.98395 ; 3 ; 6.93]; % Where lower arm connects to chassis
-MArmU = [-9.633238 ; 7.305803 ; 6.93]; % upper arm to chassis
+MArmL = [-7.96;3.01;5.6]; % Where lower arm connects to chassis
+MArmU = [-9.61;7.3;5.6]; % upper arm to chassis
 
-MArmL_End = [-20.567206; 3.142493; 0]; % Where knuckle connects to lower arm
-MArmU_End = [-21.776179 ; 10.6 ; -0]; %Where knuckle connects to upper arm
+MArmL_End = [-20.73;4.04;0]; % Where knuckle connects to lower arm
+MArmU_End = [-19.73;11.58;0]; %Where knuckle connects to upper arm
 
 minWheelTravel = 1.9685; %minimum travel in inches set by rules
 v_knuckle = (MArmU_End-MArmL_End)/norm(MArmU_End-MArmL_End);
-MWheel = v_knuckle*(3.12) + MArmL_End;
+MWheel = v_knuckle*(3.26) + MArmL_End;
 
-MARB = [-10.6 ; 4 ; 4.4];
-L_ARB = 3;
-MARB_End = [-10.6 ; 5.02 ; MARB(3)-L_ARB];
-
+MARB = [-11.85; 2.23 ; 2.9];
+L_ARB = 2.8;
+MARB_End = [-11.85 ; 2.23 ; MARB(3)-L_ARB];
 
 % Starting ARB design (the one at the bottom of SuspensionAnalysis.m)
 MBellARB0 = MBellARB;
@@ -53,19 +53,19 @@ MARB_End0 = MARB_End;
 S.x_min = 5.94;  S.x_max = 8.19;  S.n = 15;   % damper sweep
 S.mrMode   = 'Y';   % 'Y'     = ARB end Y travel / wheel travel (same as SuspensionAnalysis)
                     % 'angle' = ARB arm rotation [deg] / wheel travel [in]
-S.targetMR = [.55];    % []     = just make MR constant (level chosen by optimiser, kept in MRband)
+S.targetMR = [];    % []     = just make MR constant (level chosen by optimiser, kept in MRband)
                     % number = hold that MR (units follow mrMode). Sign matters: the wheel
                     %          height falls as the damper extends, so MR is likely negative -
                     %          check the baseline MR printed below before choosing a target.
 S.MRband   = [0.5 1.5];   % allowed mean|MR| as a fraction of the start design's (targetMR = [] only)
 S.xBearing = -7.15;  % <<< PLACEHOLDER. X of the chassis bearing/support nearest the lever arm.
                     %     Overhang = MARBx - xBearing. Set this to your real value.
-S.w = struct('mr',1, 'eta',0.3, 'bend',0.1);   % cost weights
+S.w = struct('mr',1, 'eta',0, 'bend',0);   % cost weights
 S.nStarts = 30;     % random multi-start count (first start = current design)
 
 % Bounds are the start design +/- span. Edit freely.
 %               MARBx MARBy MARBz L_ARB L_Drop BellARB_r BellARB_ang(deg)
-span       = [   2     .2    .2    0    3.5     1.2       12 ];
+span       = [   .5     0.4    0.2    .5    2     0      0 ];
 varNames   = {'MARBx','MARBy','MARBz','L_ARB','L_Drop','BellARB_r','BellARB_ang'};
 
 %% ---------------- Setup --------------------------------------------------------
